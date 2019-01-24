@@ -15,6 +15,10 @@ const findById = id => db('cohorts').where({
     id
 }).first();
 
+// Unique Students
+const getCohortStudents = id => db('students').where({
+    cohort_id: id
+});
 
 // U - Update
 const update = (id, record) => db('cohorts').where({
@@ -30,6 +34,7 @@ module.exports = {
     create,
     readAll,
     findById,
+    getCohortStudents,
     update,
     destroy
 }

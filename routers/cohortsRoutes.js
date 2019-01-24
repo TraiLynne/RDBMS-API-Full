@@ -80,7 +80,7 @@ router.get('/:id', async (req, res) => {
             res
             .status(404)
             .json({
-                errorMessage: 'There is no zoo found'
+                errorMessage: 'There is no student found'
             })
     } catch (err) {
         res
@@ -92,14 +92,30 @@ router.get('/:id', async (req, res) => {
 });
 
 // Unique Students
-router.get('/:id/students', (req, res) => {
-    res
-        .status(200)
-        .json({
-            url: '/api/cohorts/:id/students',
-            operation: 'GET',
-            description: 'returns all students for the cohort with the specified `id`'
-        });
+router.get('/:id/students', async (req, res) => {
+    const {
+        id
+    } = req.params;
+
+    try {
+        const students = await db.getCohortStudents(id);
+
+        students.length > 0 ?
+            res
+            .status(200)
+            .json(students) :
+            res
+            .status(404)
+            .json({
+                errorMessage: 'There are no students found'
+            })
+    } catch (err) {
+        res
+            .status(500)
+            .json({
+                errorMessage: 'Houston we have a problem'
+            });
+    }
 });
 
 // U - Update
