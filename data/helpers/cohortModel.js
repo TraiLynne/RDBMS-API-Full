@@ -4,7 +4,7 @@ const dbConfig = require('../../knexfile');
 const db = knex(dbConfig.development);
 
 // C - Create 
-const create = zoo => db('cohorts').insert(zoo);
+const create = newRecord => db('cohorts').insert(newRecord);
 
 // R - Read
 // All
@@ -17,9 +17,9 @@ const findById = id => db('cohorts').where({
 
 
 // U - Update
-const update = (id, zoo) => db('cohorts').where({
+const update = (id, record) => db('cohorts').where({
     id
-}).update(zoo);
+}).update(record);
 
 // D - Destroy
 const destroy = id => db('cohorts').where({
