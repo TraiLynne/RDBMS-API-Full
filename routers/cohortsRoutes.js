@@ -41,25 +41,54 @@ router.post('/', async (req, res) => {
 
 // R - Read
 // All
-router.get('/', (req, res) => {
-    res
-        .status(200)
-        .json({
-            url: '/api/cohorts',
-            operation: 'GET',
-            description: 'return an array of all cohorts'
-        });
+router.get('/', async (req, res) => {
+    try {
+        const cohorts = await db.readAll();
+
+        cohorts.length > 0 ?
+            res
+                .status(200)
+                .json(cohorts)
+            :
+            res
+                .status(404)
+                .json({
+                    errorMessage: 'There were no Cohorts found'
+                });
+    } catch (err) {
+        res
+            .status(500)
+            .json({
+                errorMessage: 'Houston, we have a problem'
+            });
+    }
 });
 
 // Unique
-router.get('/:id', (req, res) => {
-    res
-        .status(200)
-        .json({
-            url: '/api/cohorts/:id',
-            operation: 'GET',
-            description: 'return the cohort with the matching `id`'
-        });
+router.get('/:id', async (req, res) => {
+    const {
+        id
+    } = req.params;
+
+    try {
+        const cohort = await db.findById(id);
+
+        cohort ?
+            res
+            .status(200)
+            .json(cohort) :
+            res
+            .status(404)
+            .json({
+                errorMessage: 'There is no zoo found'
+            })
+    } catch (err) {
+        res
+            .status(500)
+            .json({
+                errorMessage: 'Houston we have a problem'
+            });
+    }
 });
 
 // Unique Students
