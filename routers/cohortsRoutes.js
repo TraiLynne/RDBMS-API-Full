@@ -119,14 +119,34 @@ router.get('/:id/students', async (req, res) => {
 });
 
 // U - Update
-router.put('/:id', (req, res) => {
-    res
-        .status(200)
-        .json({
-            url: '/api/cohorts/:id',
-            operation: 'PUT',
-            description: 'update the cohort with the matching `id` using information sent in the body of the request'
-        });
+router.put('/:id', async (req, res) => {
+    const {
+        id
+    } = req.params;
+    const updates = req.body;
+
+    try {
+        const changes = await db.update(id, updates);
+
+
+        changes ?
+            res
+            .status(200)
+            .json({
+                changes: changes
+            }) :
+            res
+            .status(500)
+            .json({
+                errorMessage: 'There was an error processing your request'
+            });
+    } catch (err) {
+        res
+            .status(500)
+            .json({
+                errorMessage: 'Houston we have a problem'
+            });
+    }
 });
 
 // D - Delete
