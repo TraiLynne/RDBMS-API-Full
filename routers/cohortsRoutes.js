@@ -1,19 +1,43 @@
 const express = require('express');
-
+const db = require('../data/helpers/cohortModel');
 const router = express.Router();
 
 router.use(express.json());
 
 // C - Create
-router.post('/', (req, res) => {
-    res
-        .status(201)
-        .json({
-            url: '/api/cohorts',
-            operation: 'POST',
-            description: 'save a new cohort to the database'
-        });
+router.post('/', async (req, res) => {
+    const newRecord = req.body;
+
+    try {
+        if (!newRecord.name || newRecord.name === '') {
+            res
+                .status(400)
+                .json({
+                    errorMessage: 'Please provide a name for the new record'
+                });
+        } else {
+            let newId = await db.create(newRecord);
+
+            newId ?
+                res
+                .status(201)
+                    .json({ ...newRecord, id: newId[0] }) :
+                res
+                .status(500)
+                .json({
+                    errorMessage: 'Houston we have a problem'
+                });
+
+        }
+    } catch (err) {
+        res
+            .status(500)
+            .json({
+                errorMessage: 'Houston we have a problem'
+            });
+    }
 });
+
 
 // R - Read
 // All
